@@ -62,8 +62,6 @@ function loadMessages() {
   const messagesDiv = document.getElementById('messages');
   const savedData = JSON.parse(localStorage.getItem('chatData')) || {};
   const messages = savedData.messages || [];
-  const userName = savedData.userName || '';
-  const userNameColor = savedData.userNameColor || '#000000';
   
   messages.forEach(message => {
     const p = document.createElement('p');
@@ -71,11 +69,16 @@ function loadMessages() {
     messagesDiv.appendChild(p);
   });
   
-  userNameInput.value = userName;
-  colorInput.value = userNameColor;
-  applyUserNameColor(userNameColor);
-  
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Save new message to local storage
+function saveMessage(name, color, content) {
+  const savedData = JSON.parse(localStorage.getItem('chatData')) || {};
+  const messages = savedData.messages || [];
+  messages.push({ name, color, content });
+  
+  saveChatData(savedData.userName, savedData.userNameColor, messages);
 }
 
 // Save chat data to local storage
@@ -83,6 +86,7 @@ function saveChatData(userName, userNameColor, messages) {
   const chatData = { userName, userNameColor, messages };
   localStorage.setItem('chatData', JSON.stringify(chatData));
 }
+
 
     // Show name and color input form
     function showNameColorForm() {
