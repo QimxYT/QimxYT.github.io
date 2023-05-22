@@ -60,31 +60,22 @@
     // Load existing messages from local storage
 function loadMessages() {
   const messagesDiv = document.getElementById('messages');
-  const savedData = JSON.parse(localStorage.getItem('chatData')) || {};
-  const messages = savedData.messages || [];
-  
+  const messages = JSON.parse(localStorage.getItem('messages')) || [];
+
   messages.forEach(message => {
     const p = document.createElement('p');
     p.innerHTML = `<span style="color: ${message.color};">${message.name}:</span> ${message.content}`;
     messagesDiv.appendChild(p);
   });
-  
+
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
 // Save new message to local storage
 function saveMessage(name, color, content) {
-  const savedData = JSON.parse(localStorage.getItem('chatData')) || {};
-  const messages = savedData.messages || [];
+  const messages = JSON.parse(localStorage.getItem('messages')) || [];
   messages.push({ name, color, content });
-  
-  saveChatData(savedData.userName, savedData.userNameColor, messages);
-}
-
-// Save chat data to local storage
-function saveChatData(userName, userNameColor, messages) {
-  const chatData = { userName, userNameColor, messages };
-  localStorage.setItem('chatData', JSON.stringify(chatData));
+  localStorage.setItem('messages', JSON.stringify(messages));
 }
 
 
@@ -107,27 +98,29 @@ function saveChatData(userName, userNameColor, messages) {
     }
 
     // Send message
-    function sendMessage() {
-      const messageInput = document.getElementById('message-input');
-      const message = messageInput.value.trim();
-      if (message === '') {
-        return;
-      }
-      const messagesDiv = document.getElementById('messages');
-      const p = document.createElement('p');
-      p.innerHTML = `<span style="color: ${userNameColor};">${userName}:</span> ${message}`;
-      messagesDiv.appendChild(p);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-      saveMessage(nameInput.value, colorInput.value, message);
-      messageInput.value = '';
-    }
+function sendMessage() {
+  const nameInput = document.getElementById('name');
+  const colorInput = document.getElementById('color');
+  const messageInput = document.getElementById('message-input');
+  const message = messageInput.value.trim();
+  if (message === '') {
+    return;
+  }
+  const messagesDiv = document.getElementById('messages');
+  const p = document.createElement('p');
+  p.innerHTML = `<span style="color: ${colorInput.value};">${nameInput.value}:</span> ${message}`;
+  messagesDiv.appendChild(p);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  saveMessage(nameInput.value, colorInput.value, message);
+  messageInput.value = '';
+}
 
-    // Initialize the chat room
-    function initializeChatRoom() {
-      loadMessages();
-    }
+   // Initialize the chat room
+function initializeChatRoom() {
+  loadMessages();
+}
 
-    initializeChatRoom();
+initializeChatRoom();
   </script>
 </body>
 </html>
