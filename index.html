@@ -58,23 +58,31 @@
     let userNameColor = '#000000';
 
     // Load existing messages from local storage
-    function loadMessages() {
-      const messagesDiv = document.getElementById('messages');
-      const messages = JSON.parse(localStorage.getItem('messages')) || [];
-      messages.forEach(message => {
-        const p = document.createElement('p');
-        p.innerHTML = `<span style="color: ${message.color};">${message.name}:</span> ${message.content}`;
-        messagesDiv.appendChild(p);
-      });
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
+function loadMessages() {
+  const messagesDiv = document.getElementById('messages');
+  const savedData = JSON.parse(localStorage.getItem('chatData')) || {};
+  const messages = savedData.messages || [];
+  const userName = savedData.userName || '';
+  const userNameColor = savedData.userNameColor || '#000000';
+  
+  messages.forEach(message => {
+    const p = document.createElement('p');
+    p.innerHTML = `<span style="color: ${message.color};">${message.name}:</span> ${message.content}`;
+    messagesDiv.appendChild(p);
+  });
+  
+  userNameInput.value = userName;
+  colorInput.value = userNameColor;
+  applyUserNameColor(userNameColor);
+  
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
 
-    // Save new message to local storage
-    function saveMessage(name, color, content) {
-      const messages = JSON.parse(localStorage.getItem('messages')) || [];
-      messages.push({ name, color, content });
-      localStorage.setItem('messages', JSON.stringify(messages));
-    }
+// Save chat data to local storage
+function saveChatData(userName, userNameColor, messages) {
+  const chatData = { userName, userNameColor, messages };
+  localStorage.setItem('chatData', JSON.stringify(chatData));
+}
 
     // Show name and color input form
     function showNameColorForm() {
